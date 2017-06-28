@@ -1,33 +1,6 @@
 from extendable_cards.lib.cards import Card
 from extendable_cards.view.graphics import Rectangle, Point, Text
 
-import pdb
-
-def draw_basic_card(card, dx, dy, h, w, graphwin, image=None):
-    """
-    Takes a basic card, the top left's coordinates's dx, dy
-    the height and width of the card an an image to display (not supported)
-    draws card at given coordinates
-    """
-    left_p = Point(dx,dy)
-    right_p = Point(dx+w, dy+h)
-    outline = Rectangle(left_p, right_p)
-
-    wraped_text = break_text(card.name, w)
-    text_height = wraped_text.count('\n')*0.5
-    text_p = Point(dx+w/2, dy+text_height)
-    card_t = Text(text_p, wraped_text)
-    card_t.setSize(9)
-
-    corner_p = Point(dx, dy)
-    one_p = Point(dx+1, dy+1)
-    one_r = Rectangle(corner_p, one_p)
-
-    outline.draw(graphwin)
-    card_t.draw(graphwin)
-    one_r.draw(graphwin)
-    return outline
-
 
 def break_text_naive(text, width):
     """
