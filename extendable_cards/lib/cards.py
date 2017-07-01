@@ -20,6 +20,16 @@ class Deck(object):
         self.hand = []
         self.discard = []
 
+    def deck_empty(self):
+        if len(self.cards) > 0:
+            return False
+        return True
+
+    def discard_empty(self):
+        if len(self.discard) > 0:
+            return False
+        return True
+
     def add_card(self, card):
         self.cards.append(card)
 
@@ -36,8 +46,10 @@ class Deck(object):
 
 
     def draw(self, num):
-        self.hand.extend(self.cards[0:num])
+        drawn = self.cards[0:num]
+        self.hand.extend(drawn)
         del self.cards[0:num]
+        return drawn
 
 
     def discard_from_hand(self, name):
