@@ -1,7 +1,7 @@
 from extendable_cards.lib.cards import CardController, CardOrganizer
 from extendable_cards.view.graphics import GraphWin
 from extendable_cards.view.game_outline import GameOutline
-from extendable_cards.view.card_view import CardView, DeckBack, CardOrganizerDisplay
+from extendable_cards.view.card_view import CardView, CardOrganizerDisplay
 from extendable_cards.view.playing_card_view import PlayingCardView, get_standard_playing_card_deck_view
 from tkinter import Button
 import pdb
