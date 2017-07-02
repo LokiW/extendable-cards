@@ -78,19 +78,35 @@ class CardController(object):
         drawn = self.deck.remove_top_cards(num)
         self.hand.add_cards(drawn)
 
+    def play_from_hand(self, name):
+        card = self.hand.remove_card(name)
+        self.in_play.add_card(card)
+
+    def play_from_deck(self, name):
+        card = self.deck.remove_card(name)
+        self.in_play.add_card(card)
+
+    def play_top_from_deck(self, num):
+        cards = self.deck.remove_top_cards(num)
+        self.in_play.add_cards(cards)
+
+    def discard_from_play(self, name):
+        card = self.in_play.remove_card(name)
+        self.discard.add_card(card)
+
     def discard_from_hand(self, name):
         card = self.hand.remove_card(name)
         self.discard.add_card(card)
 
     def discard_from_deck(self, num):
-        discarded = self.deck.remove_top_card(num)
+        discarded = self.deck.remove_top_cards(num)
         self.discard.add_cards(discarded)
 
     def remove_from_deck(self, name):
         """
         removes card from deck entirely, not to hand, discard or other
         """
-        self.deck.remove_card(name)
+        self.deck.remove_top_cards(name)
 
     def bring_back_to_hand(self, name):
         """

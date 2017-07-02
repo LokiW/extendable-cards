@@ -1,5 +1,5 @@
 from extendable_cards.lib.cards import CardController, CardOrganizer
-from extendable_cards.view.graphics import GraphWin
+from extendable_cards.view.graphics import GraphWin, Entry, Point
 from extendable_cards.view.game_outline import GameOutline
 from extendable_cards.view.card_view import CardView, CardOrganizerDisplay
 from extendable_cards.view.playing_card_view import PlayingCardView, get_standard_playing_card_deck_view
@@ -26,90 +26,86 @@ def visual_main():
     win.getMouse()
     win.close()
 
-
-def card_interaction(control, win):
-    cont = True
+def game_input_loop(control, win):
     print_card_game_options()
     update_display(control, deck=True, hand=True, discard=True, in_play=True, selection=True)
-    while(cont):
+    entry_width = 15
+    entry_offpoint = SCREEN['width'] / 12
+    print entry_width
+    print win.winfo_x() + entry_offpoint
+    e = Entry(Point(win.winfo_x() + entry_offpoint, win.winfo_y()+10), int(entry_width))
+    e.draw(win)
+
+    e_b = Button(win, text="enter", command=lambda: card_interaction(control, win, e.getText()))
+    e_b.place(x=entry_offpoint*2, y=win.winfo_y())
+
+    win.getMouse()
+
+def card_interaction(control, win, line):
+    #line = raw_input(">")
+    while(len(line) < 1):
+        print "Invalid Option, Now waiting for terminal input"
         line = raw_input(">")
-        if len(line) < 1:
-            print "Invalid Option, Try Again"
-        elif line[0:1] == "o":
-            print_card_game_options()
-        elif line[0:1] == "d":
-            try:
-                command, num = line.split(" ")
-            except:
-                print "Invalid draw option, type d then a number, e.g. d 6"
-                continue
-            control.draw(int(num))
+
+    if line[0:1] == "o":
+        print_card_game_options()
+    elif line[0:1] == "d":
+        num = get_number(line)
+        if num:
+            control.draw(num)
             update_display(control, deck=True, hand=True)
 
-        elif line[0:1] == "p":
-            try:
-                command, item = line.split(" ")
-            except:
-                print "Invalid print option, choose p then deck, hand or discard, e.g. p hand"
-                continue
-            if item == "deck":
-                control.deck.display()
-            elif item == "hand":
-                control.hand.display()
-            elif "dis" in item:
-                control.discard.display()
-            else:
-                print "Don't recognize {0} for printing".format(item)
-        elif line[0:1] == "s":
-            control.deck.shuffle()
-        elif line[0:1] == "r":
-            try:
-                name = get_card_name(line)
-            except:
-                print "Invalid remove card option"
-                continue
+    elif line[0:1] == "s":
+        control.deck.shuffle()
+    elif line[0:1] == "r":
+        name = get_card_name(line)
+        if name:
             control.remove_from_deck(name)
-        elif len(line) > 2:
-            if line[0:2] == "th":
-                try:
-                    name = get_card_name(line)
-                except:
-                    print "Invalid toss card from hand option"
-                    continue
+            update_display(control, deck=True)
+    elif len(line) > 2:
+        if line[0:2] == "ph":
+            name = get_card_name(line)
+            if name:
+                control.play_from_hand(name)
+                update_display(control, hand=True, in_play=True)
+        elif line[0:2] == "pd":
+            name = get_card_name(line)
+            if name:
+                control.play_from_deck(name)
+                update_display(control, deck=True, in_play=True)
+        elif line[0:2] == "pt":
+            num = get_number(line)
+            if num:
+                control.play_top_from_deck(num)
+                update_display(control, deck=True, in_play=True)
+        elif line[0:2] == "th":
+            name = get_card_name(line)
+            if name:
                 control.discard_from_hand(name)
                 update_display(control, hand=True, discard=True)        
 
-            elif line[0:2] == "td":
-                try:
-                    num = get_number(line)
-                except:
-                    print "Invalid toss cards from top of deck option"
-
+        elif line[0:2] == "td":
+            num = get_number(line)
+            if num:
                 control.discard_from_deck(num)
                 update_display(control, discard=True)
 
-            elif line[0:2] == "bh":
-                try:
-                    name = get_card_name(line)
-                except:
-                    print "Invalid bring card back to hand option"
-                    continue
+        elif line[0:2] == "bh":
+            name = get_card_name(line)
+            if name:
                 control.bring_back_to_hand(name)
                 update_display(control, hand=True, discard=True)
 
-            elif line[0:2] == "bd":
-                try:
-                    name = get_card_name(line)
-                except:
-                    print "Invalid bring card back to dack option"
-                    continue
+        elif line[0:2] == "bd":
+            name = get_card_name(line)
+            if name:
                 control.bring_back_to_deck(name)
                 update_display(control, discard=True)
-        elif line[0:1] == "q":
-            cont = False
-            win.close()
-        else:
-            print "Invalid Option, Try Again (press o to see options)"
+    elif line[0:1] == "q":
+        cont = False
+        win.close()
+    else:
+        print "Invalid Option, Try Again (press o to see options)"
 
 
 def pcd_game(win):
@@ -169,7 +165,7 @@ def pcd_game(win):
     game_outline = GameOutline(win, win_x, win_y, SCREEN['width'], SCREEN['height'])
     game_outline.display_outline_with_labels()
 
-    card_interaction(pcd, win)
+    game_input_loop(pcd, win)
 
 
 def update_display(control, deck=False, discard=False, hand=False, in_play=False, selection=False):
@@ -178,6 +174,7 @@ def update_display(control, deck=False, discard=False, hand=False, in_play=False
         control.deck.display(hidden=True)
 
     if discard:
+        pdb.set_trace()
         control.discard.undisplay()
         control.discard.display()
 
@@ -195,13 +192,21 @@ def update_display(control, deck=False, discard=False, hand=False, in_play=False
 
 
 def get_number(input):
-    command, number = input.split(" ")
+    try:
+        command, number = input.split(" ")
+    except:
+        print "Unable to get number from intput."
+        return False
     return int(number)
 
 def get_card_name(input):
-    vals = input.split(" ")
-    vals = vals[1:]
-    name = (" ").join(vals)
+    try:
+        vals = input.split(" ")
+        vals = vals[1:]
+        name = (" ").join(vals)
+    except:
+        print "Unable to decifer name from input."
+        return False
     return name
 
 
@@ -209,7 +214,7 @@ def print_card_game_options():
     print "Choose from the following options at any time:"
     print "options or o -- to print options"
     print "draw # or d # -- to draw that many cards"
-    print "print hand, p deck, p discard -- to print cards"
+    print "play <card name> -- to play card from hand"
     print "shuffle or s -- to shuffle deck"
     print "th <card name> -- to discard that card from hand"
     print "td # -- to discard that many cards from top of deck"
