@@ -1,112 +1,73 @@
-from extendable_cards.view.view_utils import break_text
+from extendable_cards.view.view_utils import break_text, CardDisplayObject 
 from extendable_cards.view.graphics import Rectangle, Point, Text
+from extendable_cards.lib.cards import Card, CardOrganizer
 
 
-class CardView(object):
-    def __init__(self, card, graphwin):
-        self.card = card
-        self.win = graphwin
-        self.drawn = False
+class CardView(Card):
+    def __init__(self, name, graphwin):
+        super(CardView, self).__init__(name)
+        specs = {"center": self.name}
+        self.display = CardDisplayObject(specs, graphwin)        
     
-    
-    def display_card(self, dx, dy, h, w):
-        """
-        Takes a basic card, the top left's coordinates's dx, dy
-        the height and width of the card an an image to display (not supported)
-        draws card at given coordinates
-        """
-        if self.drawn:
-            return False
-
-        left_p = Point(dx,dy)
-        right_p = Point(dx+w, dy+h)
-        outline = Rectangle(left_p, right_p)
-        outline.setFill("white")
-
-        wraped_text = break_text(self.card.name, w)
-        text_height = wraped_text.count('\n')*0.5
-        text_p = Point(dx+w/2, dy+text_height+max(h/5.0, 0.5))
-        card_t = Text(text_p, wraped_text)
-        card_t.setSize(9)
-
-        corner_p = Point(dx, dy)
-        one_p = Point(dx+1, dy+1)
-        one_r = Rectangle(corner_p, one_p)
-
-        outline.draw(self.win)
-        card_t.draw(self.win)
-        one_r.draw(self.win)
-
-        self.outline = outline
-        self.text = card_t
-        self.drawn = True
+    def display_card(self, context):
+        self.display.display_card(context)
 
     def is_displayed(self):
-        return self.drawn
+        return self.display.is_displayed()
 
     def undisplay(self):
-        if not self.drawn:
-            return False
+        self.display.undisplay()
 
-        self.text.undraw()
-        self.outline.undraw()
-        self.drawn = False
+    def display_back(self, context):
+        self.display.display_back(context)
 
 
-class DeckBack(object):
-    def __init__(self, graphwin):
+class CardOrganizerDisplay(CardOrganizer):
+    def __init__(self, cards, graphwin, context):
+        super(CardOrganizerDisplay, self).__init__(cards)
         self.win = graphwin
-        self.drawn = False
-        self.back = []
-
-    def display_deck_back(self, p1, p2):
-        if self.drawn:
+        self.context = context
+    
+    def display(self, hidden=False):
+        card_num = len(self.cards)
+        if card_num == 0:
             return False
+        cur_card = 0
 
-        lx = min(p1.getX(), p2.getX())
-        rx = max(p1.getX(), p2.getX())
-        ty = min(p1.getY(), p2.getY())
-        by = max(p1.getY(), p2.getY())
+        lx = self.context['lx']
+        rx = self.context['rx']
+        ty = self.context['ty']
+        by = self.context['by']
 
-        lx = lx + (rx - lx)*0.1
-        rx = rx - (rx - lx)*0.05
+        y_unit = (by - ty) / 50.0
 
-        ty = ty + (by - ty)*0.1
-        by = by - (by - ty)*0.05
+        if 'card_height' not in self.context:
+            self.context['card_height'] = by - ty - 2*y_unit
+        
+        if 'card_width' not in self.context:
+            self.context['card_width'] = self.context['card_height'] * (5.0/7.0)
 
-        x_unit = (rx - lx)/50.0
-        y_unit = (by - ty)/50.0
+        x_unit = ((rx - self.context['card_width']) - lx)/card_num
 
-        left_p1 = Point(lx+x_unit, ty+y_unit)
-        right_p1 = Point(rx-3*x_unit, by-3*y_unit)
-        bot1 = Rectangle(left_p1, right_p1)
-        bot1.setFill("white")
-        self.back.append(bot1)
 
-        left_p2 = Point(lx+2*x_unit, ty+2*y_unit)
-        right_p2 = Point(rx-2*x_unit, by-2*y_unit)
-        bot2 = Rectangle(left_p2, right_p2)
-        bot2.setFill("white")
-        self.back.append(bot2)
-
-        top_right_p = Point(lx+3*x_unit, ty+3*y_unit)
-        top_left_p = Point(rx-x_unit, by-y_unit)
-        top = Rectangle(top_left_p, top_right_p)
-        top.setFill("red")
-        self.back.append(top)
-
-        for r in self.back:
-            r.draw(self.win)
-        self.drawn = True
+        for card in self.cards:
+            cc = {'lx': lx + (cur_card*x_unit),
+                  'ty': ty + y_unit}
+            cc['rx'] = cc['lx'] + self.context['card_width']
+            cc['by'] = cc['ty'] + self.context['card_height']
+            if hidden:
+                card.display_back(cc)
+            else:
+                card.display_card(cc)
+            cur_card += 1
 
 
     def undisplay(self):
-        if not self.drawn:
-            return False
+        for card in self.cards:
+            card.undisplay()
+    
 
-        for r in self.back:
-            r.undraw()
-        self.drawn = False
+    def update_context(self, context):
+        self.context = context
 
-    def is_displayed(self):
-        return self.drawn
+
