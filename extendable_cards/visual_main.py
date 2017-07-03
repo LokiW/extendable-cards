@@ -157,7 +157,7 @@ def pcd_game(win):
             'by': deck_context['by']
     }
 
-    dis = CardOrganizerDisplay(None, win, dis_context)
+    dis = CardOrganizerDisplay([], win, dis_context)
 
     hand_context = {
             'lx': dis_context['rx'],
@@ -166,7 +166,7 @@ def pcd_game(win):
             'by': deck_context['by']
     }
 
-    hand = CardOrganizerDisplay(None, win, hand_context)
+    hand = CardOrganizerDisplay([], win, hand_context)
 
     play_context = {
             'lx': dis_context['lx'],
@@ -175,7 +175,7 @@ def pcd_game(win):
             'by': win_y + SCREEN['height'] - (SCREEN['height']*(2.0/3.0))
     }
 
-    play = CardOrganizerDisplay(None, win, play_context)
+    play = CardOrganizerDisplay([], win, play_context)
 
     sel_context = {
             'lx': hand_context['lx'],
@@ -184,7 +184,7 @@ def pcd_game(win):
             'by': hand_context['ty']
     }
 
-    sel = CardOrganizerDisplay(None, win, sel_context)
+    sel = CardOrganizerDisplay([], win, sel_context)
 
     pcd = CardController(deck=deck, discard=dis, hand=hand, in_play=play, selected=sel)
 

@@ -75,16 +75,23 @@ class CardDisplayObject(object):
         if self.drawn:
             return False
 
-        dx = context['lx']
-        dy = context['ty']
+        lx = context['lx']
+        ty = context['ty']
         rx = context['rx']
         by = context['by']
 
-        w = rx - dx
-        h = by - dy
+        w = rx - lx
+        h = by - ty
 
-        left_p = Point(dx,dy)
-        right_p = Point(dx+w, dy+h)
+        ctx = lx+w/2.0
+        rtx = rx-max(w/5.0, 0.5)
+        ltx = lx+max(w/5.0, 0.5)
+        cty = ty+h/2.0
+        tty = ty+max(h/5.0,0.5)
+        bty = by-max(h/5.0, 0.5)
+
+        left_p = Point(lx,ty)
+        right_p = Point(rx, by)
         outline = Rectangle(left_p, right_p)
         if 'fill_color' in self.texts:
             outline.setFill(self.texts.fill_color)
@@ -95,27 +102,32 @@ class CardDisplayObject(object):
         self.display_texts = []
 
         if 'center' in self.texts:
-            center_p = Point(dx+w/2.0, dy+h/2.0)
-            center_t = Text(center_p, self.texts['center'])
-            if 'text_color' in self.texts:
-                center_t.setTextColor(self.texts['text_color'])
-            self.display_texts.append(center_t)
+            self._add_text(ctx, cty, context, self.texts['center'])
+
+        if 'top_center' in self.texts:
+            self._add_text(ctx, tty, context, self.texts['top_center'])
+
+        if 'bottom_center' in self.texts:
+            self._add_text(ctx, bty, context, self.texts['bottom_center'])
 
         if 'bottom_left' in self.texts:
-            bottom_left_p = Point(dx+max(w/5.0, 0.5), dy+h-max(h/5.0, 0.5))
-            bottom_left_t = Text(bottom_left_p, self.texts['bottom_left'])
-            if 'text_color' in self.texts:
-                bottom_left_t.setTextColor(self.texts['text_color'])
-            self.display_texts.append(bottom_left_t)
+            self._add_text(ltx, bty, context, self.texts['bottom_left'])
 
         if 'top_right' in self.texts:
-            top_right_p = Point(dx+w-max(w/5.0, 0.5), dy+max(h/5.0,0.5))
-            top_right_t = Text(top_right_p, self.texts['top_right'])
-            if 'text_color' in self.texts:
-                top_right_t.setTextColor(self.texts['text_color'])
-            self.display_texts.append(top_right_t)
+            self._add_text(rtx, tty, context, self.texts['top_right'])
+
 
         self.drawn = True
+
+
+    def _add_text(self, x, y, context, text):
+        mod_text = break_text(text, context['rx'] - context['lx'])
+        text_height = mod_text.count('\n') 
+        new_text = Text(Point(x,y+(text_height/2)), mod_text)
+        new_text.setSize(9)
+        if 'text_color' in self.texts:
+            new_text.setTextColor(self.texts['text_color'])
+        self.display_texts.append(new_text)
 
 
 
