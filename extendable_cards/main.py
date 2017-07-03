@@ -1,4 +1,5 @@
-from extendable_cards.lib.playing_cards import PlayingCardDeck
+from extendable_cards.lib.playing_cards import get_standard_playing_card_deck
+from extendable_cards.lib.cards import CardController, CardOrganizer
 import fileinput
 import pdb
 
@@ -17,7 +18,7 @@ def main():
         else:
             print "Invalid Option, Try Again"
 
-def card_interaction(deck):
+def card_interaction(control):
     cont = True
     print_card_game_options()
     while(cont):
@@ -25,32 +26,32 @@ def card_interaction(deck):
         if len(line) < 1:
             print "Invalid Option, Try Again"
         elif line[0:1] == "o":
-            print_pcd_options()
+            print_card_game_options()
         elif line[0:1] == "d":
             try:
                 command, num = line.split(" ")
-                deck.draw(int(num))
+                control.draw(int(num))
             except:
                 print "Invalid draw option, type d then a number, e.g. d 6"
         elif line[0:1] == "p":
             try:
                 command, item = line.split(" ")
                 if item == "deck":
-                    print deck
+                    print control.deck
                 elif item == "hand":
-                    print deck.hand
+                    print control.hand
                 elif "dis" in item:
-                    print deck.discard
+                    print control.discard
                 else:
                     print "Don't recognize {0} for printing".format(item)
             except:
                 print "Invalid print option, choose p then deck, hand or discard, e.g. p hand"
         elif line[0:1] == "s":
-            deck.shuffle()
+            control.deck.shuffle()
         elif line[0:1] == "r":
             try:
                 name = get_card_name(line)
-                result = deck.remove_from_deck(name)
+                result = control.remove_from_deck(name)
                 if not result:
                     print "Couldn't remove card {0} from deck".format(name)
             except:
@@ -59,7 +60,7 @@ def card_interaction(deck):
             if line[0:2] == "th":
                 try:
                     name = get_card_name(line)
-                    result = deck.discard_from_hand(name)
+                    result = control.discard_from_hand(name)
                     if not result:
                         print "Couldn't discard {0}".format(name)
                 except:
@@ -67,13 +68,13 @@ def card_interaction(deck):
             elif line[0:2] == "td":
                 try:
                     num = get_number(line)
-                    deck.discard_from_deck(num)
+                    control.discard_from_deck(num)
                 except:
                     print "Invalid toss cards from top of deck option"
             elif line[0:2] == "bh":
                 try:
                     name = get_card_name(line)
-                    result = deck.bring_back_to_hand(name)
+                    result = control.bring_back_to_hand(name)
                     if not result:
                         print "Couldn't bring card back to hand"
                 except:
@@ -81,7 +82,7 @@ def card_interaction(deck):
             elif line[0:2] == "bd":
                 try:
                     name = get_card_name(line)
-                    result = deck.bring_back_to_deck(name)
+                    result = control.bring_back_to_deck(name)
                     if not result:
                         print "Couldn't bring card back to deck"
                 except:
@@ -94,7 +95,8 @@ def card_interaction(deck):
 
 def pcd_game():
     cont = True
-    pcd = PlayingCardDeck()
+    standard_deck = CardOrganizer(get_standard_playing_card_deck())
+    pcd = CardController(deck=standard_deck)
     card_interaction(pcd)
 
 def get_number(input):

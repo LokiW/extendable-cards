@@ -1,0 +1,73 @@
+from extendable_cards.view.view_utils import break_text, CardDisplayObject 
+from extendable_cards.view.graphics import Rectangle, Point, Text
+from extendable_cards.lib.cards import Card, CardOrganizer
+
+
+class CardView(Card):
+    def __init__(self, name, graphwin):
+        super(CardView, self).__init__(name)
+        specs = {"center": self.name}
+        self.display = CardDisplayObject(specs, graphwin)        
+    
+    def display_card(self, context):
+        self.display.display_card(context)
+
+    def is_displayed(self):
+        return self.display.is_displayed()
+
+    def undisplay(self):
+        self.display.undisplay()
+
+    def display_back(self, context):
+        self.display.display_back(context)
+
+
+class CardOrganizerDisplay(CardOrganizer):
+    def __init__(self, cards, graphwin, context):
+        super(CardOrganizerDisplay, self).__init__(cards)
+        self.win = graphwin
+        self.context = context
+    
+    def display(self, hidden=False):
+        card_num = len(self.cards)
+        if card_num == 0:
+            return False
+        cur_card = 0
+
+        lx = self.context['lx']
+        rx = self.context['rx']
+        ty = self.context['ty']
+        by = self.context['by']
+
+        y_unit = (by - ty) / 50.0
+
+        if 'card_height' not in self.context:
+            self.context['card_height'] = by - ty - 2*y_unit
+        
+        if 'card_width' not in self.context:
+            self.context['card_width'] = self.context['card_height'] * (5.0/7.0)
+
+        x_unit = ((rx - self.context['card_width']) - lx)/card_num
+
+
+        for card in self.cards:
+            cc = {'lx': lx + (cur_card*x_unit),
+                  'ty': ty + y_unit}
+            cc['rx'] = cc['lx'] + self.context['card_width']
+            cc['by'] = cc['ty'] + self.context['card_height']
+            if hidden:
+                card.display_back(cc)
+            else:
+                card.display_card(cc)
+            cur_card += 1
+
+
+    def undisplay(self):
+        for card in self.cards:
+            card.undisplay()
+    
+
+    def update_context(self, context):
+        self.context = context
+
+
