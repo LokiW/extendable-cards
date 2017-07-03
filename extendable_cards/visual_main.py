@@ -1,15 +1,23 @@
-from extendable_cards.lib.cards import CardController, CardOrganizer
+from extendable_cards.lib.cards import Card, CardController, CardOrganizer
+from extendable_cards.lib.playing_cards import PlayingCard, get_standard_playing_card_deck
 from extendable_cards.view.graphics import GraphWin, Entry, Point
 from extendable_cards.view.game_outline import GameOutline
 from extendable_cards.view.card_view import CardView, CardOrganizerDisplay
 from extendable_cards.view.playing_card_view import PlayingCardView, get_standard_playing_card_deck_view
 from tkinter import Button
+import sys
 import pdb
 
 SCREEN = {"height": 100, "width": 100}
 
 
-def visual_main():
+def visual_main(argv):
+    if argv:
+        if argv[0] == 'console':
+            console_game_input_loop()
+            sys.exit(0)
+            
+    
     win = GraphWin("Extendable Cards", 100, 100)
     SCREEN["width"] = win.winfo_screenwidth() * 0.8
     SCREEN["height"] = win.winfo_screenheight() * 0.8
@@ -26,7 +34,24 @@ def visual_main():
     win.getMouse()
     win.close()
 
-def game_input_loop(control, win):
+def console_game_input_loop():
+    cards = get_standard_playing_card_deck()
+    obj_cards = []
+    for card in cards:
+        if hasattr(card, 'suit'):
+            obj_cards.append(PlayingCard(card.suit, card.number))
+        else:
+            obj_cards.append(Card(card.name))
+    standard_deck=CardOrganizer(obj_cards, context={'label': 'deck'})
+    control = CardController(deck=standard_deck)
+    print_card_game_options()
+    cont = True
+    while(cont):
+        line = raw_input("> ")
+        cont = card_interaction(control, line)
+
+
+def visual_game_input_loop(control, win):
     print_card_game_options()
     update_display(control, deck=True, hand=True, discard=True, in_play=True, selection=True)
     entry_width = 15
@@ -36,12 +61,12 @@ def game_input_loop(control, win):
     e = Entry(Point(win.winfo_x() + entry_offpoint, win.winfo_y()+10), int(entry_width))
     e.draw(win)
 
-    e_b = Button(win, text="enter", command=lambda: card_interaction(control, win, e.getText()))
+    e_b = Button(win, text="enter", command=lambda: card_interaction(control, e.getText()))
     e_b.place(x=entry_offpoint*2, y=win.winfo_y())
 
     win.getMouse()
 
-def card_interaction(control, win, line):
+def card_interaction(control, line):
     #line = raw_input(">")
     while(len(line) < 1):
         print "Invalid Option, Now waiting for terminal input"
@@ -79,6 +104,7 @@ def card_interaction(control, win, line):
                 control.play_top_from_deck(num)
                 update_display(control, deck=True, in_play=True)
         elif line[0:2] == "th":
+            pdb.set_trace()
             name = get_card_name(line)
             if name:
                 control.discard_from_hand(name)
@@ -102,11 +128,11 @@ def card_interaction(control, win, line):
                 control.bring_back_to_deck(name)
                 update_display(control, discard=True)
     elif line[0:1] == "q":
-        cont = False
-        win.close()
+        return False 
     else:
         print "Invalid Option, Try Again (press o to see options)"
-
+    
+    return True
 
 def pcd_game(win):
     win.delete("all")
@@ -165,7 +191,7 @@ def pcd_game(win):
     game_outline = GameOutline(win, win_x, win_y, SCREEN['width'], SCREEN['height'])
     game_outline.display_outline_with_labels()
 
-    game_input_loop(pcd, win)
+    visual_game_input_loop(pcd, win)
 
 
 def update_display(control, deck=False, discard=False, hand=False, in_play=False, selection=False):
@@ -174,7 +200,6 @@ def update_display(control, deck=False, discard=False, hand=False, in_play=False
         control.deck.display(hidden=True)
 
     if discard:
-        pdb.set_trace()
         control.discard.undisplay()
         control.discard.display()
 
@@ -225,4 +250,4 @@ def print_card_game_options():
 
 
 if __name__ == "__main__":
-        visual_main()
+    visual_main(sys.argv[1:])

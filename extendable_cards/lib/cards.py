@@ -11,15 +11,13 @@ class Card(object):
         return self.__str__()
 
     def display_card(self, context=None):
-        print '[' + self.name + ']'
+        print '[' + self.name + ']',
 
 
 class CardOrganizer(object):
-    def __init__(self, cards=None, context=None):
-        if cards is None:
-            self.cards = []
-        else:
-            self.cards = cards
+    def __init__(self, cards=[], context={}):
+        self.cards = cards
+        self.context = context
 
     def is_empty(self):
         return len(cards) == 0
@@ -55,6 +53,20 @@ class CardOrganizer(object):
                 self.cards.remove(card)
                 return card
 
+    def display(self, hidden=False):
+        if not hidden:
+            if 'label' in self.context:
+                print self.context['label'] + ": ",
+
+            for card in self.cards:
+                card.display_card()
+
+            print '\n'
+
+
+    def undisplay(self):
+        return False
+
     def __str__(self):
         output = "{"
         for card in self.cards:
@@ -68,11 +80,11 @@ class CardOrganizer(object):
 
 class CardController(object):
     def __init__(self, deck=None, hand=None, discard=None, in_play=None, selected=None):
-        self.deck = deck if deck else CardOrganizer()
-        self.hand = hand if hand else CardOrganizer()
-        self.discard = discard if discard else CardOrganizer()
-        self.in_play = in_play if in_play else CardOrganizer()
-        self.selected = selected if selected else CardOrganizer()
+        self.deck = deck if deck else CardOrganizer(context={'label':'deck'})
+        self.hand = hand if hand else CardOrganizer(context={'label':'hand'})
+        self.discard = discard if discard else CardOrganizer(context={'label':'discard'})
+        self.in_play = in_play if in_play else CardOrganizer(context={'label':'in play'})
+        self.selected = selected if selected else CardOrganizer(context={'label':'selected'})
 
     def draw(self, num):
         drawn = self.deck.remove_top_cards(num)
