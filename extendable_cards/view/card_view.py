@@ -7,7 +7,8 @@ class CardView(Card):
     def __init__(self, name, graphwin):
         super(CardView, self).__init__(name)
         specs = {"center": self.name}
-        self.display = CardDisplayObject(specs, graphwin)        
+        config = [{'text': self.name, 'r':1, 'c':1, 's':'', 'w':3}]
+        self.display = CardDisplayObject(config, graphwin)        
     
     def display_card(self, context):
         self.display.display_card(context)

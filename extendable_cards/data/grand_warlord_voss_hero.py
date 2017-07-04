@@ -21,7 +21,7 @@ def get_grand_warlord_voss_hero():
     cards.append({
         'name': "The last Ruoenf",
         'tags': [SentinelTag.TARGET, SentinelTag.SURVIVOR],
-        'description': "This target is immune to melee damage.\nReduce damage to this target by 1.\nAttack: Deal 1 target 1 melee damage.\nAssist:Reduce damage to 1 other target by 1.\nAnalyse: One player may draw 1 card now.\nDefend: Redirect all damage that would be dealt to a hero target to The last Ruenf."
+        'description': "This target is immune to melee damage.\nReduce damage to this target by 1.\nAttack: Deal 1 target 1 melee damage.\nAssist:Reduce damage to 1 other target by 1.\nAnalyse: One player may draw 1 card now.\nDefend: Redirect all damage that would be dealt to a hero target to The last Ruenf.",
         'max_health': 12
     })
 
@@ -95,7 +95,7 @@ def get_grand_warlord_voss_hero():
     eye_serum = {
         'name': "Enhanced Eyes",
         'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM],
-        'description': "Put this card next to a target.\nAttack: This target deals 1 target one energy damage."
+        'description': "Put this card next to a target.\nAttack: This target deals 1 target one energy damage.",
         'quote': "Ah, sweet! Lazer eyes! -Setback"
     }
     cards.extend([eye_serum, eye_serum])

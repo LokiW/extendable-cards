@@ -1,5 +1,6 @@
 from extendable_cards.lib.cards import Card
-from extendable_cards.view.graphics import Rectangle, Point, Text
+from extendable_cards.view.graphics import Rectangle, Point
+from tkinter import Text, Frame
 import pdb
 
 
@@ -83,39 +84,19 @@ class CardDisplayObject(object):
         w = rx - lx
         h = by - ty
 
-        ctx = lx+w/2.0
-        rtx = rx-max(w/5.0, 0.5)
-        ltx = lx+max(w/5.0, 0.5)
-        cty = ty+h/2.0
-        tty = ty+max(h/5.0,0.5)
-        bty = by-max(h/5.0, 0.5)
-
-        left_p = Point(lx,ty)
-        right_p = Point(rx, by)
-        outline = Rectangle(left_p, right_p)
+        #Frame test
+        self.frame = Frame(self.win, height=h, width=w)
+        self.frame.config(borderwidth=4, padx=2, relief="groove")
+        self.frame.grid_propagate(False)
         if 'fill_color' in self.texts:
-            outline.setFill(self.texts.fill_color)
+            self.frame.config(background=self.texts['fill_color'])
         else:
-            outline.setFill("white")
-        self.outline = outline
-
+            self.frame.config(background="white")
+        #self.frame.place(x=lx, y=ty)
+        
         self.display_texts = []
-
-        if 'center' in self.texts:
-            self._add_text(ctx, cty, context, self.texts['center'])
-
-        if 'top_center' in self.texts:
-            self._add_text(ctx, tty, context, self.texts['top_center'])
-
-        if 'bottom_center' in self.texts:
-            self._add_text(ctx, bty, context, self.texts['bottom_center'])
-
-        if 'bottom_left' in self.texts:
-            self._add_text(ltx, bty, context, self.texts['bottom_left'])
-
-        if 'top_right' in self.texts:
-            self._add_text(rtx, tty, context, self.texts['top_right'])
-
+        for t in self.texts:
+            self.display_texts.append(TextWrap(t, frame=self.frame))
 
         self.drawn = True
 
@@ -123,11 +104,13 @@ class CardDisplayObject(object):
     def _add_text(self, x, y, context, text):
         mod_text = break_text(text, context['rx'] - context['lx'])
         text_height = mod_text.count('\n') 
-        new_text = Text(Point(x,y+(text_height/2)), mod_text)
-        new_text.setSize(9)
-        if 'text_color' in self.texts:
-            new_text.setTextColor(self.texts['text_color'])
-        self.display_texts.append(new_text)
+        new_text = Text(self.frame, height=1, width=20) 
+        new_text.config(wrap='word')
+        new_text.insert('end', text)
+        
+        #if 'text_color' in self.texts:
+        #    new_text.setTextColor(self.texts['text_color'])
+        self.display_texts.append(TextWrap(new_text, x, y, self.frame))
 
 
 
@@ -140,24 +123,24 @@ class CardDisplayObject(object):
 
         if not self.drawn:
             self._setup_display_objects(context)
-        else:
-            if self.hidden:
-                if 'fill_color' in self.texts:
-                    self.outline.setFill(self.texts['fill_color'])
-                else:
-                    self.outline.setFill("white")
-                
-            self.move_display(context)
-            if self.visible and self.hidden:
-                for t in self.display_texts:
-                    t.draw(self.win)
-            elif not self.visible:
-                self.outline.draw(self.win)
-                for t in self.display_texts:
-                    t.draw(self.win)
+    
+        if self.hidden:
+            if 'fill_color' in self.texts:
+                self.frame.config(background=self.texts['fill_color'])
+            else:
+                self.frame.config(background="white")
+            
+        self.move_display(context)
+        if self.visible and self.hidden:
+            for t in self.display_texts:
+                t.draw(self.frame)
+        elif not self.visible:
+            self.frame.place(x=context['lx'], y=context['ty'])
+            for t in self.display_texts:
+                t.draw(self.frame)
 
-            self.visible = True
-            self.hidden = False
+        self.visible = True
+        self.hidden = False
 
 
     def is_displayed(self):
@@ -172,7 +155,7 @@ class CardDisplayObject(object):
             for t in self.display_texts:
                 t.undraw()
 
-        self.outline.undraw()
+        self.frame.place_forget()
         self.visible = False
 
     def display_back(self, context):
@@ -183,23 +166,65 @@ class CardDisplayObject(object):
             return False
 
         if 'back_color' in self.texts:
-            self.outline.setFill(self.texts['back_color'])
+            self.frame.config(background=self.texts['back_color'])
         else:
-            self.outline.setFill("red")
+            self.frame.config(background="red")
 
-        self.outline.draw(self.win)
+        self.frame.place(x=context['lx'], y=context['ty'])
 
         self.visible = True
         self.hidden = True
 
     def move_display(self, context):
-        cur_x = min(self.outline.getP1().getX(), self.outline.getP2().getX())
-        cur_y = min(self.outline.getP1().getY(), self.outline.getP2().getY())
+        cur_x = self.frame.winfo_x()
+        cur_y = self.frame.winfo_y()
 
         dx = context['lx'] - cur_x
         dy = context['ty'] - cur_y
-       
-        self.outline.move(dx, dy)
+      
+        self.frame.place(x=cur_x, y=cur_y)
         for t in self.display_texts:
-            t.move(dx, dy)
+            t.draw(self.frame)
+
+
+class TextWrap(object):
+    def __init__(self, configs, frame):
+        self.frame = frame
+        
+        new_text = Text(self.frame, height=4, width=configs['w']) 
+        new_text.config(wrap='word')
+        new_text.insert('end', configs['text'])
+        self.text = new_text
+
+        self.r = configs['r']
+        self.c = configs['c']
+        self.w = configs['w']
+        self.s = configs['s']
+        if 'weight' in configs:
+            self.weight = configs['weight']
+        else:
+            self.weight = 1
+
+
+    def undraw(self):
+        #self.text.place_forget()
+        self.text.grid_remove()
+
+    def draw(self, graphwin):
+        #self.text.place(x=self.x, y=self.y)
+        self.text.grid(row=self.r, column=self.c, sticky=self.s)
+        self.text.grid_rowconfigure(index=self.r, weight=self.weight)
+
+        return True
+
+    def move(self, dx, dy):
+        return False
+        """
+        self.x = r
+        self.y = c
+        self.y = w
+        self.s = s
+        #self.text.grid(row=r, column=c, weight=w, sticky=self.s)
+        #self.text.place(x=self.x, y=self.y)
+        """
 

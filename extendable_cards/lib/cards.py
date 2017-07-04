@@ -15,9 +15,16 @@ class Card(object):
 
 
 class CardOrganizer(object):
-    def __init__(self, cards=[], context={}):
-        self.cards = cards
-        self.context = context
+    def __init__(self, cards=None, context=None):
+        if cards:
+            self.cards = cards
+        else:
+            self.cards = []
+
+        if context:
+            self.context = context
+        else:
+            self.context = {}
 
     def is_empty(self):
         return len(cards) == 0
@@ -38,6 +45,9 @@ class CardOrganizer(object):
                 return card
 
         return None
+
+    def add_card_top(slef, card):
+        self.cards.insert(0, card)
 
     def get_top_cards(self, num):
         return self.cards[:num]
@@ -133,6 +143,25 @@ class CardController(object):
         """
         revived = self.discard.remove_card(name)
         self.deck.add_card(revived)
+
+    def bring_back_to_deck_top(self, name):
+        """
+        take given card from discard, put on top of the deck
+        """
+        revived = self.discard.remove_card(name)
+        self.deck.add_card_top(revived)
+
+    def return_from_play_to_hand(self, name):
+        """
+        take given card from play, put back into hand
+        """
+        revived = self.in_play.remove_card(name)
+        self.hand.add_card(revived)
+
+    def return_from_play_to_deck_top(self, name):
+        revived = self.in_play.remove_card(name)
+        self.deck.add_card_top(name)
+
 
     def __str__(self):
         output = "{deck: " + str(self.deck)

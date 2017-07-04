@@ -19,7 +19,13 @@ class PlayingCardView(PlayingCard):
                 "top_right": suitnum,
                 "top_left": suitnum,
                 "text_color": color}
-        self.display = CardDisplayObject(specs, graphwin)        
+        configs = []
+        configs.append({'text': self.suit, 'r':1, 'c':1, 's':'', 'w':7})
+        configs.append({'text': suitnum, 'r':0, 'c':0, 's':'W', 'w':6})
+        configs.append({'text': suitnum, 'r':2, 'c':0, 's':'W', 'w':6})
+        configs.append({'text': suitnum, 'r':0, 'c':2, 's':'E', 'w':6})
+        configs.append({'text': suitnum, 'r':2, 'c':2, 's':'E', 'w':6})
+        self.display = CardDisplayObject(configs, graphwin)        
     
     def display_card(self, context):
         self.display.display_card(context)

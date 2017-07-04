@@ -1,18 +1,22 @@
-from enum import Enum
-from cards import Card, Deck
+from cards import Card
 
 
 class SentinelCard(Card):
-    def __init__(self, name, description, tags=[], quote=None, max_health=None):
-        super(SentinelCard, self).__init__(name)
-        self.tags = tags
-        self.text = description
-        self.quote = quote
-        self.max_health = max_health
-        self.current_health = max_health
+    def __init__(self, card):
+        super(SentinelCard, self).__init__(card['name'])
+        self.tags = card['tags']
+        self.description = card['description']
+        if 'quote' in card:
+            self.quote = card['quote']
+        else:
+            self.quote = ""
+
+        if SentinelTag.TARGET in self.tags:
+            self.max_health = card['max_health']
+            self.current_health = self.max_health
 
     def display_card(self):
-        
+        print name, 
 
     def undisplay(self):
         return False
@@ -21,19 +25,11 @@ class SentinelCard(Card):
         tag_str = ""
         for tag in self.tags:
             if not tag == SentinelTag.TARGET:
-                tag_str += tag ", "
+                tag_str += tag + ", "
         if len(tag_str) > 0:
             tag_str = tag_str[:len(tag_str)-2]
 
         return tag_str
-
-class Hero(Card):
-    def __init__(self, name, max_health, base_power, deck):
-        super(Hero, self).__init__(name)
-        self.max_health = max_health
-        self.current_health = max_health
-        self.base_power = base_power
-        self.deck = deck
 
 
 class SentinelTag(object):
