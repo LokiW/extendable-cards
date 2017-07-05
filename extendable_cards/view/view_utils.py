@@ -1,6 +1,5 @@
 from extendable_cards.lib.cards import Card
-from extendable_cards.view.graphics import Rectangle, Point
-from tkinter import Text, Frame
+from tkinter import Text, Frame, Scrollbar
 import pdb
 
 
@@ -28,41 +27,46 @@ def break_text(text, width):
     Break up text assuming text size 9 based on width.
     Tries to break text to keep words if possible
     """
-    char_per_line = width * 4
+    char_per_line = width
 
     display_text = ""
     cur_line = 0
-    words = text.split(' ')
-    for word in words:
-        if char_per_line - cur_line == 0:
-            display_text += '\n'
-            cur_line = 0
-        
-        #If word fits in line then add it
-        if len(word) + cur_line < char_per_line:
-            display_text += word + " "
-            cur_line += len(word) + 1
-        
-        #If word doesn't fit and we are going to have to break it up
-        elif len(word) > char_per_line:
-            delim = char_per_line-cur_line
-            display_text += word[0:delim]
-            for s in range(0, (len(word) - (char_per_line - cur_line))/char_per_line):
-                next_delim = delim + (s+1)*char_per_line
-                display_text += '\n' +  word[delim:next_delim]
-                delim = next_delim
+    if '\n' in text:
+        lines = text.split('\n')
+        for line in lines:
+            display_text += '\n' + break_text(line, width)
+        display_text = display_text[1:]
+    else:
+        words = text.split(' ')
+        for word in words:
+            if char_per_line - cur_line  <= 1:
+                display_text += '\n'
+                cur_line = 0
             
-            if len(word) > delim:
-                display_text += '\n' + word[delim : ]
-                cur_line += len(word) - delim
+            #If word fits in line then add it
+            if len(word) + cur_line < char_per_line:
+                display_text += word + " "
+                cur_line += len(word) + 1
+            
+            #If word doesn't fit and we are going to have to break it up
+            elif len(word) > char_per_line:
+                delim = char_per_line-cur_line
+                display_text += word[0:delim]
+                for s in range(0, (len(word) - (char_per_line - cur_line))/char_per_line):
+                    next_delim = delim + (s+1)*char_per_line
+                    display_text += '\n' +  word[delim:next_delim]
+                    delim = next_delim
+                
+                if len(word) > delim:
+                    display_text += '\n' + word[delim : ]
+                    cur_line += len(word) - delim
 
-        #If word doesn't fit but we can just add it to next line
-        else:
-            display_text += '\n' + word
-            cur_line = len(word)
+            #If word doesn't fit but we can just add it to next line
+            else:
+                display_text += '\n' + word
+                cur_line = len(word) + 1
 
     return display_text
-
 
 class CardDisplayObject(object):
     def __init__(self, texts, graphwin):
@@ -71,6 +75,7 @@ class CardDisplayObject(object):
         self.drawn = False
         self.visible = False
         self.hidden = False
+        self.enlarged = False
     
     def _setup_display_objects(self, context):
         if self.drawn:
@@ -88,6 +93,7 @@ class CardDisplayObject(object):
         self.frame = Frame(self.win, height=h, width=w)
         self.frame.config(borderwidth=4, padx=2, relief="groove")
         self.frame.grid_propagate(False)
+        self.frame.bind('<Button-1>', self.enlarge)
         if 'fill_color' in self.texts:
             self.frame.config(background=self.texts['fill_color'])
         else:
@@ -136,6 +142,7 @@ class CardDisplayObject(object):
                 t.draw(self.frame)
         elif not self.visible:
             self.frame.place(x=context['lx'], y=context['ty'])
+            self.frame.lift()
             for t in self.display_texts:
                 t.draw(self.frame)
 
@@ -148,7 +155,7 @@ class CardDisplayObject(object):
 
 
     def undisplay(self):
-        if not self.visible:
+        if not self.drawn or not self.visible:
             return False
 
         if not self.hidden:
@@ -163,7 +170,9 @@ class CardDisplayObject(object):
             self._setup_display_objects(context)
 
         if self.hidden and self.visible:
-            return False
+            self.frame.place(x=context['lx'], y=context['ty'])
+            self.frame.lift()
+            return True
 
         if 'back_color' in self.texts:
             self.frame.config(background=self.texts['back_color'])
@@ -171,6 +180,7 @@ class CardDisplayObject(object):
             self.frame.config(background="red")
 
         self.frame.place(x=context['lx'], y=context['ty'])
+        self.frame.lift()
 
         self.visible = True
         self.hidden = True
@@ -183,48 +193,59 @@ class CardDisplayObject(object):
         dy = context['ty'] - cur_y
       
         self.frame.place(x=cur_x, y=cur_y)
+        self.frame.lift()
         for t in self.display_texts:
             t.draw(self.frame)
+
+    def enlarge(self, event):
+        if self.enlarged:
+            print 'shrink'
+        else:
+            print 'enbiggen'
 
 
 class TextWrap(object):
     def __init__(self, configs, frame):
         self.frame = frame
-        
-        new_text = Text(self.frame, height=4, width=configs['w']) 
-        new_text.config(wrap='word')
+        self.h = 1 if not 'h' in configs else configs['h']
+        self.w = configs['w']
+        self.ts = 12 if not 'ts' in configs else configs['ts']
+
+        new_text = Text(self.frame, height=self.h, width=self.w) 
+        new_text.config(wrap='word', font=('Arial', self.ts))
         new_text.insert('end', configs['text'])
         self.text = new_text
 
         self.r = configs['r']
         self.c = configs['c']
-        self.w = configs['w']
         self.s = configs['s']
-        if 'weight' in configs:
-            self.weight = configs['weight']
+        if 'cw' in configs:
+            self.cw = configs['cw']
         else:
-            self.weight = 1
+            self.cw = 1
+
+        if 'rw' in configs:
+            self.rw = configs['rw']
+        else:
+            self.rw = 1
 
 
     def undraw(self):
-        #self.text.place_forget()
         self.text.grid_remove()
 
     def draw(self, graphwin):
-        #self.text.place(x=self.x, y=self.y)
         self.text.grid(row=self.r, column=self.c, sticky=self.s)
-        self.text.grid_rowconfigure(index=self.r, weight=self.weight)
+        self.text.grid_columnconfigure(index=self.c, weight=self.cw)
+        self.text.grid_rowconfigure(index=self.r, weight=self.rw)
 
         return True
 
-    def move(self, dx, dy):
-        return False
-        """
-        self.x = r
-        self.y = c
-        self.y = w
-        self.s = s
-        #self.text.grid(row=r, column=c, weight=w, sticky=self.s)
-        #self.text.place(x=self.x, y=self.y)
-        """
+    def move(self, r, c):
+        self.r = r
+        self.c = c
+        self.draw(self.frame)
 
+
+def test_callback(texts, b):
+    print texts
+    print b

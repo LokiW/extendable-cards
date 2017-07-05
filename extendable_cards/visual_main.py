@@ -50,6 +50,8 @@ def console_game_input_loop():
         line = raw_input("> ")
         cont = card_interaction(control, line)
 
+    return False
+
 
 def visual_game_input_loop(control, win):
     print_card_game_options()
@@ -64,6 +66,7 @@ def visual_game_input_loop(control, win):
     e_b.place(x=entry_offpoint*2, y=win.winfo_y())
 
     win.getMouse()
+
 
 def card_interaction(control, line):
     #line = raw_input(">")
@@ -116,7 +119,7 @@ def card_interaction(control, line):
             num = get_number(line)
             if num:
                 control.discard_from_deck(num)
-                update_display(control, discard=True)
+                update_display(control, deck=True, discard=True)
         elif line[0:2] == "tp":
             #discard a card from play
             name = get_card_name(line)
@@ -153,8 +156,10 @@ def card_interaction(control, line):
             if name:
                 control.return_from_play_to_deck_top(name)
                 update_display(control, in_play=True, deck=True)
-
+    elif line[0:1] == "u":
+        update_display(control, deck=True, discard=True, hand=True, in_play=True, selection=True)
     elif line[0:1] == "q":
+        sys.exit(0)
         return False 
     else:
         print "Invalid Option, Try Again (press o to see options)"
@@ -163,9 +168,12 @@ def card_interaction(control, line):
 
 def pcd_game(win):
     win.delete("all")
+    y_padding = 50
 
     win_x = win.winfo_x()
-    win_y = win.winfo_y()
+    win_y = win.winfo_y()+y_padding
+    width = SCREEN['width']
+    height = SCREEN['height']-y_padding
 
     standard_deck = get_standard_playing_card_deck_view(win)
     deck_context = {
@@ -222,10 +230,14 @@ def pcd_game(win):
 
 def sentinels_game(win):
     win.delete("all")
-    win_x = win.winfo_x()
-    win_y = win.winfo_y()
 
-    pdb.set_trace()
+    y_padding = 50
+
+    win_x = win.winfo_x()
+    win_y = win.winfo_y()+y_padding
+    width = SCREEN['width']
+    height = SCREEN['height']-y_padding
+
     #TODO have player select these so they can be variable
     hero_deck = get_grand_warlord_voss_hero_view(win)
     character_cards = []
@@ -237,17 +249,17 @@ def sentinels_game(win):
             hero_deck.remove(card)
 
     deck_context = {
-            'lx': win_x + SCREEN['width'] - (SCREEN['width']/6.0),
-            'rx': win_x + SCREEN['width'],
-            'ty': win_y + SCREEN['height'] - (SCREEN['height']/3.0),
-            'by': win_y + SCREEN['height']
+            'lx': win_x + width - (width/6.0),
+            'rx': win_x + width,
+            'ty': win_y + height - (height/3.0),
+            'by': win_y + height
     }
 
     deck = CardOrganizerDisplay(hero_deck, win, deck_context)
 
     dis_context = {
             'lx': win_x,
-            'rx': win_x + (SCREEN['width']/6.0),
+            'rx': win_x + (width/6.0),
             'ty': deck_context['ty'],
             'by': deck_context['by']
     }
@@ -267,7 +279,7 @@ def sentinels_game(win):
             'lx': dis_context['lx'],
             'rx': deck_context['rx'],
             'ty': win_y,
-            'by': win_y + SCREEN['height'] - (SCREEN['height']*(2.0/3.0))
+            'by': win_y + height - (height*(2.0/3.0))
     }
 
     play = CardOrganizerDisplay(None, win, play_context)

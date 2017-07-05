@@ -19,7 +19,7 @@ def get_grand_warlord_voss_hero():
     })
 
     cards.append({
-        'name': "The last Ruoenf",
+        'name': "The Last Ruoenf",
         'tags': [SentinelTag.TARGET, SentinelTag.SURVIVOR],
         'description': "This target is immune to melee damage.\nReduce damage to this target by 1.\nAttack: Deal 1 target 1 melee damage.\nAssist:Reduce damage to 1 other target by 1.\nAnalyse: One player may draw 1 card now.\nDefend: Redirect all damage that would be dealt to a hero target to The last Ruenf.",
         'max_health': 12
@@ -28,7 +28,7 @@ def get_grand_warlord_voss_hero():
     cards.append({
         'name': "The Gene-Bound Infantry",
         'tags': [SentinelTag.TARGET, SentinelTag.SURVIVOR],
-        'description': "This target is immune to lightning damage.\nAt teh end of Rainek's turn, heal 3 targets for 1 hp each.\nAttack:Deal each target 1 lightning damage.\nAssist: You may destroy 1 ongoing or environment card.\nAnalyse: Activate a defend text.\nDefend: Reduce damage to The Gene-Bound Infantry target by 1.",
+        'description': "This target is immune to lightning damage.\nAt the end of Rainek's turn, heal 3 targets for 1 hp each.\nAttack:Deal each target 1 lightning damage.\nAssist: You may destroy 1 ongoing or environment card.\nAnalyse: Activate a defend text.\nDefend: Reduce damage to The Gene-Bound Infantry target by 1.",
         'max_health': 8
     })
 

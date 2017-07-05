@@ -23,7 +23,9 @@ def display():
     text.grid(row=0, column=0)
     text2.grid(row=2, column=0)
     frame.config(width=100, height=100)
-    win.getMouse()
+    while 1:
+        mouse_point = win.getMouse()
+        frame.place(x=mouse_point.getX(), y=mouse_point.getY())
     #text.pack()
     
 

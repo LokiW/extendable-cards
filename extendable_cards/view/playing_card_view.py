@@ -20,7 +20,7 @@ class PlayingCardView(PlayingCard):
                 "top_left": suitnum,
                 "text_color": color}
         configs = []
-        configs.append({'text': self.suit, 'r':1, 'c':1, 's':'', 'w':7})
+        configs.append({'text': self.suit, 'r':1, 'c':1, 's':'', 'w':6, 'rw':2, 'cw':2})
         configs.append({'text': suitnum, 'r':0, 'c':0, 's':'W', 'w':6})
         configs.append({'text': suitnum, 'r':2, 'c':0, 's':'W', 'w':6})
         configs.append({'text': suitnum, 'r':0, 'c':2, 's':'E', 'w':6})

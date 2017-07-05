@@ -65,6 +65,12 @@ class CardOrganizerDisplay(CardOrganizer):
 
     def undisplay(self):
         for card in self.cards:
+            if not card:
+                print self.cards
+                print len(self.cards)
+            elif type(card) is str:
+                print card + " is string"
+                print self.cards
             card.undisplay()
     
 

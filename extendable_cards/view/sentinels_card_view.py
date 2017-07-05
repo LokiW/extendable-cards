@@ -15,11 +15,14 @@ class SentinelCardView(SentinelCard):
                 }
    
         configs = []
-        configs.append({'text': self.name, 'r':0, 'c':0, 's':'W', 'w':17, 'weight': 1})
-        configs.append({'text': self.get_tags_str(), 'r':1, 'c':0, 's':'W', 'w':20, 'weight': 1})
-        configs.append({'text': self.description, 'r':2, 'c':0, 's':'W', 'w':20, 'weight': 2})
+        name_h = break_text(self.name, 15).count('\n') + 1
+        configs.append({'text': self.name, 'ts': 12, 'r':0, 'c':0, 's':'W', 'h':name_h, 'w':15})
+        tag_h = break_text(self.get_tags_str(), 20).count('\n') + 1 
+        configs.append({'text': self.get_tags_str(), 'ts':9, 'r':1, 'c':0, 's':'W', 'h':tag_h, 'w':20})
+        desc_h = break_text(self.description, 30).count('\n') + 1
+        configs.append({'text': self.description, 'ts':9, 'r':2, 'c':0, 's':'S', 'h':desc_h+2, 'w':20, 'rw': 5, 'cw':3})
         if SentinelTag.TARGET in self.tags:
-            configs.append({'text': self.current_health, 'r':0, 'c':2, 's':'E', 'w':7, 'weight': 1})
+            configs.append({'text': self.current_health, 'r':0, 'c':1, 's':'W', 'h':1, 'w':7, 'cw': 5})
 
         self.display = CardDisplayObject(configs, graphwin)        
     

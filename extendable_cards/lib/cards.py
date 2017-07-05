@@ -27,7 +27,7 @@ class CardOrganizer(object):
             self.context = {}
 
     def is_empty(self):
-        return len(cards) == 0
+        return len(self.cards) == 0
 
 
     def shuffle(self):
@@ -46,13 +46,18 @@ class CardOrganizer(object):
 
         return None
 
-    def add_card_top(slef, card):
+    def add_card_top(self, card):
         self.cards.insert(0, card)
 
     def get_top_cards(self, num):
+        if not self.is_empty() and len(self.cards) < num:
+            num = len(self.cards)
         return self.cards[:num]
 
     def remove_top_cards(self, num):
+        if not self.is_empty() and len(self.cards) < num:
+            num = len(self.cards)
+
         removed = self.cards[:num]
         del self.cards[:num]
         return removed
@@ -98,31 +103,38 @@ class CardController(object):
 
     def draw(self, num):
         drawn = self.deck.remove_top_cards(num)
-        self.hand.add_cards(drawn)
+        if drawn:
+            self.hand.add_cards(drawn)
 
     def play_from_hand(self, name):
         card = self.hand.remove_card(name)
-        self.in_play.add_card(card)
+        if card:
+            self.in_play.add_card(card)
 
     def play_from_deck(self, name):
         card = self.deck.remove_card(name)
-        self.in_play.add_card(card)
+        if card:
+            self.in_play.add_card(card)
 
     def play_top_from_deck(self, num):
         cards = self.deck.remove_top_cards(num)
-        self.in_play.add_cards(cards)
+        if cards:
+            self.in_play.add_cards(cards)
 
     def discard_from_play(self, name):
         card = self.in_play.remove_card(name)
-        self.discard.add_card(card)
+        if card:
+            self.discard.add_card(card)
 
     def discard_from_hand(self, name):
         card = self.hand.remove_card(name)
-        self.discard.add_card(card)
+        if card:
+            self.discard.add_card(card)
 
     def discard_from_deck(self, num):
         discarded = self.deck.remove_top_cards(num)
-        self.discard.add_cards(discarded)
+        if discarded:
+            self.discard.add_cards(discarded)
 
     def remove_from_deck(self, name):
         """
@@ -135,32 +147,37 @@ class CardController(object):
         takes given card from discard, puts in hand
         """
         revived = self.discard.remove_card(name)
-        self.hand.add_card(revived)
+        if revived:
+            self.hand.add_card(revived)
 
     def bring_back_to_deck(self, name):
         """
         take given card from discard, puts on bottom of deck
         """
         revived = self.discard.remove_card(name)
-        self.deck.add_card(revived)
+        if revived:
+            self.deck.add_card(revived)
 
     def bring_back_to_deck_top(self, name):
         """
         take given card from discard, put on top of the deck
         """
         revived = self.discard.remove_card(name)
-        self.deck.add_card_top(revived)
+        if revived:
+            self.deck.add_card_top(revived)
 
     def return_from_play_to_hand(self, name):
         """
         take given card from play, put back into hand
         """
         revived = self.in_play.remove_card(name)
-        self.hand.add_card(revived)
+        if revived:
+            self.hand.add_card(revived)
 
     def return_from_play_to_deck_top(self, name):
         revived = self.in_play.remove_card(name)
-        self.deck.add_card_top(name)
+        if revived:
+            self.deck.add_card_top(revived)
 
 
     def __str__(self):
