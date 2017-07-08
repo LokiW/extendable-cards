@@ -52,7 +52,7 @@ class CardOrganizerDisplay(CardOrganizer):
 
         x_unit = ((rx - self.context['card_width']) - lx)/card_num
         def draw_callback(cur_card, lx, ty, context, x_unit, y_unit, cards):
-            if cur_card == len(cards):
+            if cur_card >= len(cards):
                 return True
 
             card = cards[cur_card]

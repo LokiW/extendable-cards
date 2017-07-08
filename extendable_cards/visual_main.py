@@ -1,12 +1,12 @@
 from extendable_cards.lib.cards import Card, CardController, CardOrganizer
 from extendable_cards.lib.playing_cards import PlayingCard, get_standard_playing_card_deck
 from extendable_cards.lib.sentinels import SentinelTag
-from extendable_cards.view.graphics import GraphWin, Entry, Point
+from extendable_cards.view.graphics import GraphWin, Point
 from extendable_cards.view.game_outline import GameOutline
 from extendable_cards.view.card_view import CardView, CardOrganizerDisplay
 from extendable_cards.view.playing_card_view import PlayingCardView, get_standard_playing_card_deck_view
 from extendable_cards.view.sentinels_card_view import SentinelCardView, get_grand_warlord_voss_hero_view
-from tkinter import Button
+from tkinter import Button, Entry
 import sys
 import pdb
 
@@ -59,13 +59,10 @@ def visual_game_input_loop(control, win):
     entry_width = 15
     entry_offpoint = SCREEN['width'] / 12
     
-    e = Entry(Point(win.winfo_x() + entry_offpoint, win.winfo_y()+10), int(entry_width))
-    e.draw(win)
-
-    e_b = Button(win, text="enter", command=lambda: card_interaction(control, e.getText()))
-    e_b.place(x=entry_offpoint*2, y=win.winfo_y())
-
-
+    e = Entry(win, width=int(entry_width))
+    e.place(x=win.winfo_x() + entry_offpoint, y=win.winfo_y()+10)
+    e.bind('<Return>', lambda event: card_interaction(control, e.get()))
+    
 
 def card_interaction(control, line):
     #line = raw_input(">")
