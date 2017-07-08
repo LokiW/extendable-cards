@@ -40,9 +40,21 @@ class CardOrganizer(object):
         self.cards.extend(cards)
 
     def get_card(self, name):
+        found = None
+        use_found = False
         for card in self.cards:
             if name == card.name:
                 return card
+
+            if name in card.name:
+                if not found:
+                    found = card
+                    use_found = True
+                else:
+                    use_found = False
+
+        if use_found:
+            return found
 
         return None
 
@@ -63,10 +75,11 @@ class CardOrganizer(object):
         return removed
 
     def remove_card(self, name):
-        for card in self.cards[:]:
-            if name == card.name:
-                self.cards.remove(card)
-                return card
+        card = self.get_card(name)
+        if card:
+            self.cards.remove(card)
+        return card
+
 
     def display(self, hidden=False):
         if not hidden:
@@ -82,6 +95,7 @@ class CardOrganizer(object):
     def undisplay(self):
         return False
 
+
     def __str__(self):
         output = "{"
         for card in self.cards:
@@ -91,6 +105,9 @@ class CardOrganizer(object):
 
     def __repr__(self):
         return self.__str__()
+
+    def get_len(self):
+        return len(self.cards)
 
 
 class CardController(object):

@@ -301,10 +301,11 @@ def update_display(control, deck=False, discard=False, hand=False, in_play=False
 def get_number(input):
     try:
         command, number = input.split(" ")
+        num = int(number)
     except:
         print "Unable to get number from intput."
         return False
-    return int(number)
+    return num
 
 def get_card_name(input):
     try:
