@@ -9,7 +9,7 @@ class PlayingCard(Card):
         self.number = number
 
     def display_card(self, context=None):
-        print '[{0} {1}]'.format(self.number, self.suit)
+        print '[{0} {1}]'.format(self.number, self.suit),
 
 
 def get_standard_playing_card_deck(joker=True):

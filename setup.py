@@ -10,6 +10,6 @@ setup(name='extendable-cards',
       url='https://github.com/LokiW/extendable-cards',
       packages=find_packages(),
       setup_requires=["pytest-runner"],
-      tests_requires=["pytest"]
+      tests_requires=["pytest", "mock"]
     )
 
