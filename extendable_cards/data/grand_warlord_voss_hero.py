@@ -64,7 +64,7 @@ def get_grand_warlord_voss_hero():
     cards.extend([boost_collar, boost_collar])
 
     crushing_sheild = {
-        'name': "Crushing Sheild",
+        'name': "Crushing Shield",
         'tags': [SentinelTag.EQUIPMENT],
         'description': "Put this card next to a target. The first time that target would take 2 or less damage each turn, they may redirect that damage to the target of their choice. At the start of their turn, that target deals themselves 3 melee damage."
     }
@@ -95,7 +95,7 @@ def get_grand_warlord_voss_hero():
     eye_serum = {
         'name': "Enhanced Eyes",
         'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM],
-        'description': "Put this card next to a target.\nAttack: This target deals 1 target one energy damage.",
+        'description': "Put this card next to a hero character card.\nAttack: This hero deals 1 target one energy damage.",
         'quote': "Ah, sweet! Lazer eyes! -Setback"
     }
     cards.extend([eye_serum, eye_serum])
@@ -103,21 +103,21 @@ def get_grand_warlord_voss_hero():
     leg_serum = {
         'name': "Speed Enhancement",
         'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM],
-        'description': "Put this card next to a hero.\nAnalyse: This hero draws 1 card now."
+        'description': "Put this card next to a hero character card.\nAnalyse: This hero draws 1 card now."
     }
     cards.extend([leg_serum, leg_serum])
 
     disposition_serum = {
         'name': "Disposition Enhancement",
         'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM],
-        'description': "Put this card next to a hero.\nAssist: This hero may discard up to 2 cards. One hero may draw x cards, where x is the number of cards discarded this way."
+        'description': "Put this card next to a hero character card.\nAssist: This hero may discard up to 2 cards. One hero may draw x cards, where x is the number of cards discarded this way."
     }
     cards.extend([disposition_serum, disposition_serum])
 
     skin_serum = {
         'name': "Flesh Enhancement",
         'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM],
-        'description': "Put this card next to a target.\nDefend: Reduce damage dealt to this target by 1 until the start of Rainek's next turn."
+        'description': "Put this card next to a hero character card.\nDefend: Reduce damage dealt to this hero by 1 until the start of Rainek's next turn."
     }
     cards.extend([skin_serum, skin_serum])
 
