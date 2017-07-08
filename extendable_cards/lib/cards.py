@@ -50,7 +50,7 @@ class CardOrganizer(object):
                 if not found:
                     found = card
                     use_found = True
-                else:
+                elif found.name != card.name:
                     use_found = False
 
         if use_found:
