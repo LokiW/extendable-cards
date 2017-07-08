@@ -18,9 +18,9 @@ class SentinelCardView(SentinelCard):
         name_h = break_text(self.name, 15).count('\n') + 1
         configs.append({'text': self.name, 'ts': 12, 'r':0, 'c':0, 's':'W', 'h':name_h, 'w':15})
         tag_h = break_text(self.get_tags_str(), 20).count('\n') + 1 
-        configs.append({'text': self.get_tags_str(), 'ts':9, 'r':1, 'c':0, 's':'W', 'h':tag_h, 'w':20})
+        configs.append({'text': self.get_tags_str(), 'ts':9, 'r':1, 'c':0, 's':'W', 'h':tag_h, 'w':17})
         desc_h = break_text(self.description, 30).count('\n') + 1
-        configs.append({'text': self.description, 'ts':9, 'r':2, 'c':0, 's':'S', 'h':desc_h+2, 'w':20, 'rw': 5, 'cw':3})
+        configs.append({'text': self.description, 'ts':9, 'r':2, 'c':0, 's':'S', 'h':desc_h+2, 'w':17, 'rw': 5, 'cw':3})
         if SentinelTag.TARGET in self.tags:
             configs.append({'text': self.current_health, 'r':0, 'c':1, 's':'W', 'h':1, 'w':7, 'cw': 5})
 

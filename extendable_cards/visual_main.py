@@ -65,7 +65,6 @@ def visual_game_input_loop(control, win):
     e_b = Button(win, text="enter", command=lambda: card_interaction(control, e.getText()))
     e_b.place(x=entry_offpoint*2, y=win.winfo_y())
 
-    win.getMouse()
 
 
 def card_interaction(control, line):
@@ -176,57 +175,26 @@ def pcd_game(win):
     height = SCREEN['height']-y_padding
 
     standard_deck = get_standard_playing_card_deck_view(win)
-    deck_context = {
-            'lx': win_x + SCREEN['width'] - (SCREEN['width']/6.0),
-            'rx': win_x + SCREEN['width'],
-            'ty': win_y + SCREEN['height'] - (SCREEN['height']/3.0),
-            'by': win_y + SCREEN['height']
-    }
+    contexts = _get_card_organizer_tkinter_contexts(win_x, win_y, width, height)
 
-    deck = CardOrganizerDisplay(standard_deck, win, deck_context)
+    deck = CardOrganizerDisplay(standard_deck, win, contexts['deck_context'])
 
-    dis_context = {
-            'lx': win_x,
-            'rx': win_x + (SCREEN['width']/6.0),
-            'ty': deck_context['ty'],
-            'by': deck_context['by']
-    }
+    dis = CardOrganizerDisplay(None, win, contexts['dis_context'])
 
-    dis = CardOrganizerDisplay(None, win, dis_context)
+    hand = CardOrganizerDisplay(None, win, contexts['hand_context'])
 
-    hand_context = {
-            'lx': dis_context['rx'],
-            'rx': deck_context['lx'],
-            'ty': deck_context['ty'],
-            'by': deck_context['by']
-    }
+    play = CardOrganizerDisplay(None, win, contexts['play_context'])
 
-    hand = CardOrganizerDisplay(None, win, hand_context)
-
-    play_context = {
-            'lx': dis_context['lx'],
-            'rx': deck_context['rx'],
-            'ty': win_y,
-            'by': win_y + SCREEN['height'] - (SCREEN['height']*(2.0/3.0))
-    }
-
-    play = CardOrganizerDisplay(None, win, play_context)
-
-    sel_context = {
-            'lx': hand_context['lx'],
-            'rx': hand_context['rx'],
-            'ty': play_context['by'],
-            'by': hand_context['ty']
-    }
-
-    sel = CardOrganizerDisplay(None, win, sel_context)
+    sel = CardOrganizerDisplay(None, win, contexts['sel_context'])
 
     pcd = CardController(deck=deck, discard=dis, hand=hand, in_play=play, selected=sel)
 
-    game_outline = GameOutline(win, win_x, win_y, SCREEN['width'], SCREEN['height'])
+    game_outline = GameOutline(win, win_x, win_y, width, height)
     game_outline.display_outline_with_labels()
 
     visual_game_input_loop(pcd, win)
+
+
 
 def sentinels_game(win):
     win.delete("all")
@@ -237,6 +205,7 @@ def sentinels_game(win):
     win_y = win.winfo_y()+y_padding
     width = SCREEN['width']
     height = SCREEN['height']-y_padding
+    contexts = _get_card_organizer_tkinter_contexts(win_x, win_y, width, height)
 
     #TODO have player select these so they can be variable
     hero_deck = get_grand_warlord_voss_hero_view(win)
@@ -248,58 +217,65 @@ def sentinels_game(win):
             print character_cards
             hero_deck.remove(card)
 
+    deck = CardOrganizerDisplay(hero_deck, win, contexts['deck_context'])
+
+    dis = CardOrganizerDisplay(None, win, contexts['dis_context'])
+
+    hand = CardOrganizerDisplay(None, win, contexts['hand_context'])
+
+    play = CardOrganizerDisplay(None, win, contexts['play_context'])
+
+    sel = CardOrganizerDisplay(character_cards, win, contexts['sel_context'])
+
+    pcd = CardController(deck=deck, discard=dis, hand=hand, in_play=play, selected=sel)
+
+    game_outline = GameOutline(win, win_x, win_y, width, height)
+    game_outline.display_outline_with_labels()
+
+    visual_game_input_loop(pcd, win)
+
+
+
+def _get_card_organizer_tkinter_contexts(lx, ty, w, h):
     deck_context = {
-            'lx': win_x + width - (width/6.0),
-            'rx': win_x + width,
-            'ty': win_y + height - (height/3.0),
-            'by': win_y + height
+            'lx': lx + w - (w/6.0),
+            'rx': lx + w,
+            'ty': ty + h - (h/3.0),
+            'by': ty + h
     }
-
-    deck = CardOrganizerDisplay(hero_deck, win, deck_context)
-
     dis_context = {
-            'lx': win_x,
-            'rx': win_x + (width/6.0),
+            'lx': lx,
+            'rx': lx + (w/6.0),
             'ty': deck_context['ty'],
             'by': deck_context['by']
     }
-
-    dis = CardOrganizerDisplay(None, win, dis_context)
-
     hand_context = {
             'lx': dis_context['rx'],
             'rx': deck_context['lx'],
             'ty': deck_context['ty'],
             'by': deck_context['by']
     }
-
-    hand = CardOrganizerDisplay(None, win, hand_context)
-
     play_context = {
             'lx': dis_context['lx'],
             'rx': deck_context['rx'],
-            'ty': win_y,
-            'by': win_y + height - (height*(2.0/3.0))
+            'ty': ty,
+            'by': ty + h - (h*(2.0/3.0))
     }
-
-    play = CardOrganizerDisplay(None, win, play_context)
-
     sel_context = {
             'lx': hand_context['lx'],
             'rx': hand_context['rx'],
             'ty': play_context['by'],
             'by': hand_context['ty']
     }
-
-    sel = CardOrganizerDisplay(character_cards, win, sel_context)
-
-    pcd = CardController(deck=deck, discard=dis, hand=hand, in_play=play, selected=sel)
-
-    game_outline = GameOutline(win, win_x, win_y, SCREEN['width'], SCREEN['height'])
-    game_outline.display_outline_with_labels()
-
-    visual_game_input_loop(pcd, win)
-
+    contexts = {
+        'deck_context': deck_context,
+        'dis_context': dis_context,
+        'hand_context': hand_context,
+        'play_context': play_context,
+        'sel_context': sel_context
+    }
+    return contexts
+    
 
 
 

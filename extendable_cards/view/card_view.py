@@ -2,6 +2,8 @@ from extendable_cards.view.view_utils import break_text, CardDisplayObject
 from extendable_cards.view.graphics import Rectangle, Point, Text
 from extendable_cards.lib.cards import Card, CardOrganizer
 
+import time
+
 
 class CardView(Card):
     def __init__(self, name, graphwin):
@@ -49,18 +51,25 @@ class CardOrganizerDisplay(CardOrganizer):
             self.context['card_width'] = self.context['card_height'] * (5.0/7.0)
 
         x_unit = ((rx - self.context['card_width']) - lx)/card_num
+        def draw_callback(cur_card, lx, ty, context, x_unit, y_unit, cards):
+            if cur_card == len(cards):
+                return True
 
+            card = cards[cur_card]
 
-        for card in self.cards:
             cc = {'lx': lx + (cur_card*x_unit),
                   'ty': ty + y_unit}
-            cc['rx'] = cc['lx'] + self.context['card_width']
-            cc['by'] = cc['ty'] + self.context['card_height']
+            cc['rx'] = cc['lx'] + context['card_width']
+            cc['by'] = cc['ty'] + context['card_height']
             if hidden:
                 card.display_back(cc)
             else:
                 card.display_card(cc)
+
             cur_card += 1
+            self.win.after_idle(lambda: draw_callback(cur_card, lx, ty, context, x_unit, y_unit, cards))
+
+        self.win.after_idle(lambda: draw_callback(cur_card, lx, ty, self.context, x_unit, y_unit, self.cards))
 
 
     def undisplay(self):

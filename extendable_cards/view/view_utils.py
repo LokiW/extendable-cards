@@ -81,6 +81,8 @@ class CardDisplayObject(object):
         if self.drawn:
             return False
 
+        self.last_context = context
+
         lx = context['lx']
         ty = context['ty']
         rx = context['rx']
@@ -91,13 +93,17 @@ class CardDisplayObject(object):
 
         #Frame test
         self.frame = Frame(self.win, height=h, width=w)
-        self.frame.config(borderwidth=4, padx=2, relief="groove")
         self.frame.grid_propagate(False)
-        self.frame.bind('<Button-1>', self.enlarge)
+        self.frame.bind('<Button-1>', self._enlarge)
+        self.f_config = {'borderwidth': 4, 'padx':2, 'relief': 'groove'}
         if 'fill_color' in self.texts:
-            self.frame.config(background=self.texts['fill_color'])
+            self.f_config['background'] = self.texts['fill_color']
         else:
-            self.frame.config(background="white")
+            self.f_config['background'] ="white"
+
+        self.frame.config(borderwidth=self.f_config['borderwidth'], background=self.f_config['background'],
+                padx=self.f_config['padx'], relief=self.f_config['relief'])
+
         #self.frame.place(x=lx, y=ty)
         
         self.display_texts = []
@@ -148,6 +154,7 @@ class CardDisplayObject(object):
 
         self.visible = True
         self.hidden = False
+        self.last_context = context
 
 
     def is_displayed(self):
@@ -184,6 +191,7 @@ class CardDisplayObject(object):
 
         self.visible = True
         self.hidden = True
+        self.last_context = context
 
     def move_display(self, context):
         cur_x = self.frame.winfo_x()
@@ -197,11 +205,52 @@ class CardDisplayObject(object):
         for t in self.display_texts:
             t.draw(self.frame)
 
-    def enlarge(self, event):
+        self.last_context = context
+
+    def _enlarge(self, event):
         if self.enlarged:
-            print 'shrink'
+            self._shrink()
         else:
             print 'enbiggen'
+            w = (self.last_context['rx'] - self.last_context['lx']) * 2
+            h = (self.last_context['by'] - self.last_context['ty']) * 2
+
+            lx = self.last_context['lx']/2
+            ty = self.last_context['ty']/2
+
+            self.frame.config(borderwidth=self.f_config['borderwidth']*2,
+                    width=w, height=h)
+            self.frame.place(x=lx, y=ty)
+            self.frame.lift()
+
+            if not self.hidden:
+                for t in self.display_texts:
+                    t.enlarge(1.5, 1.5)
+
+            
+            self.enlarged = True
+
+    def _shrink(self):
+        print 'shrink'
+        self.frame.config(borderwidth=self.f_config['borderwidth'], background=self.f_config['background'],
+                            padx=self.f_config['padx'], relief=self.f_config['relief'])
+
+        w = self.last_context['rx'] - self.last_context['lx']
+        h = self.last_context['by'] - self.last_context['ty']
+
+        self.frame.config(width=w, height=h)
+
+        if self.visible:
+            self.undisplay()
+            if self.hidden:
+                self.display_back(self.last_context)
+            else:
+                for t in self.display_texts:
+                    t.reset()
+                self.display_card(self.last_context)
+
+        self.enlarged = False
+
 
 
 class TextWrap(object):
@@ -228,8 +277,9 @@ class TextWrap(object):
             self.rw = configs['rw']
         else:
             self.rw = 1
+        self.text.config(state='disabled')
 
-
+    
     def undraw(self):
         self.text.grid_remove()
 
@@ -240,10 +290,13 @@ class TextWrap(object):
 
         return True
 
-    def move(self, r, c):
-        self.r = r
-        self.c = c
-        self.draw(self.frame)
+    def enlarge(self, factor, font):
+        self.text.config(width=int(self.w * factor), height=int(self.h * factor))
+        self.text.config(font=('Arial', int(self.ts*font)))
+
+    def reset(self):
+        self.text.config(height=self.h, width=self.w) 
+        self.text.config(wrap='word', font=('Arial', self.ts))
 
 
 def test_callback(texts, b):
