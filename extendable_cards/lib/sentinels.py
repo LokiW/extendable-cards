@@ -36,6 +36,7 @@ class SentinelTag(object):
     ONGOING = 'Ongoing'
     EQUIPMENT = 'Equipment'
     ONE_SHOT = 'One Shot'
+    LIMITED = 'Limited'
     TARGET = ''
     RELIC = 'Relic'
     CONSTRUCT = 'Construct'

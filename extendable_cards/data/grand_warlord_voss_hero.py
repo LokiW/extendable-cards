@@ -21,7 +21,7 @@ def get_grand_warlord_voss_hero():
     cards.append({
         'name': "The Last Ruoenf",
         'tags': [SentinelTag.TARGET, SentinelTag.SURVIVOR],
-        'description': "This target is immune to melee damage.\nReduce damage to this target by 1.\nAttack: Deal 1 target 1 melee damage.\nAssist:Reduce damage to 1 other target by 1.\nAnalyse: One player may draw 1 card now.\nDefend: Redirect all damage that would be dealt to a hero target to The last Ruenf.",
+        'description': "This target is immune to melee damage.\nReduce damage to this target by 1.\nAttack: Deal 1 target 1 melee damage.\nAssist:Reduce damage to 1 other target by 1.\nAnalyse: One player may draw 1 card now.\nDefend: Choose one target, redirect all damage that would be dealt to that target to The last Ruenf.",
         'max_health': 12
     })
 
@@ -58,7 +58,7 @@ def get_grand_warlord_voss_hero():
     #Equipment
     boost_collar = {
         'name': "Boost Injection Collar",
-        'tags': [SentinelTag.EQUIPMENT],
+        'tags': [SentinelTag.EQUIPMENT, SentinelTag.LIMITED],
         'description': "Put this card next to a target. Increase damage dealt by that target by 1. At the start of their turn, that target deals themself 1 cold damage.",
     }
     cards.extend([boost_collar, boost_collar])
@@ -72,14 +72,14 @@ def get_grand_warlord_voss_hero():
 
     storm_bracelets = {
         'name': "Storm Eye Bracelets",
-        'tags': [SentinelTag.EQUIPMENT],
+        'tags': [SentinelTag.EQUIPMENT, SentinelTag.LIMITED],
         'description': "Put this card next to a target. Increase healing done by that target by 1. At the start of their turn, that target deals themselves 2 lightning damage."
     }
     cards.extend([storm_bracelets, storm_bracelets])
 
     action_helm = {
         'name': "Helm of Action",
-        'tags': [SentinelTag.EQUIPMENT],
+        'tags': [SentinelTag.EQUIPMENT, SentinelTag.LIMITED],
         'description': "Put this card next to a target. At the start of theri turn, that target may deal themselves 2 psychic damage to activate one of their attack, assist, analyse or defend texts."
     }
     cards.extend([action_helm, action_helm])
@@ -94,7 +94,7 @@ def get_grand_warlord_voss_hero():
     #Ongoings
     eye_serum = {
         'name': "Enhanced Eyes",
-        'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM],
+        'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM, SentinelTag.LIMITED],
         'description': "Put this card next to a hero character card.\nAttack: This hero deals 1 target one energy damage.",
         'quote': "Ah, sweet! Lazer eyes! -Setback"
     }
@@ -116,7 +116,7 @@ def get_grand_warlord_voss_hero():
 
     skin_serum = {
         'name': "Flesh Enhancement",
-        'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM],
+        'tags': [SentinelTag.ONGOING, SentinelTag.GENE_SERUM, SentinelTag.LIMITED],
         'description': "Put this card next to a hero character card.\nDefend: Reduce damage dealt to this hero by 1 until the start of Rainek's next turn."
     }
     cards.extend([skin_serum, skin_serum])
