@@ -1,0 +1,15 @@
+
+{
+       
+‘name’: “The Last Feethsmar”,
+
+       
+‘tags’: [SentinelTag.TARGET, SentinelTag.SURVIVOR],
+ 
+      
+‘description’: “This target is immune to cold damage.\nAt the start of Rainek’s turn, the Last Feethsmar deals each nonhero target 1 cold damage.\nAttack: Deal 1 target 2 cold damage.\nAssist: Deal 1 target 1 cold damage. If they take damage this way, reduce damage delt by that target by 1 until the start of your next turn.\nAnalyse: Deal 1 non-villain target, other then itself, 3 cold damage.\nDefend:Activate an attack text.“,
+
+
+‘max_health’: 9
+
+}
