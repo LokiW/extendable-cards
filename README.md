@@ -1,8 +1,17 @@
 # extendable-cards
 Playing card representation program
 
-To run the command line interface:
-$ python extendable_cards/main.py
+To setup project
+$ python setup.py install
 
-To run tests (Note this doesn't work, the test isn't currently found):
+To pick up code changes immediately:
+$ python setup.py develop
+
+To run the command line interface:
+$ python extendable_cards/visual_main.py console
+
+To run the tkinter interface:
+$ python extendable_cards/visual_main.py
+
+To run tests:
 $ pytest

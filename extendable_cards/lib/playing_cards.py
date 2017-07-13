@@ -1,4 +1,4 @@
-from cards import Card, Deck
+from cards import Card, CardOrganizer
 
 class PlayingCard(Card):
     def __init__(self, suit, number):
@@ -8,11 +8,15 @@ class PlayingCard(Card):
         self.suit = suit
         self.number = number
 
-class PlayingCardDeck(Deck):
-    def __init__(self):
+    def display_card(self, context=None):
+        print '[{0} {1}]'.format(self.number, self.suit),
+
+
+def get_standard_playing_card_deck(joker=True):
         c = []
-        joker = Card("joker")
-        c.extend([joker, joker])
+        if joker:
+            joker = Card("joker")
+            c.extend([joker, joker])
 
         hearts = [PlayingCard("<3", n) for n in range(2, 11)]
         hearts.extend([PlayingCard("<3", "J"),
@@ -37,8 +41,7 @@ class PlayingCardDeck(Deck):
                         PlayingCard("<>", "Q"),
                         PlayingCard("<>", "K")])
         c.extend(diamond)
-        super(PlayingCardDeck, self).__init__(c)
+        return c
 
 
-def get_playing_card_deck():
-    return PLAYING_CARDS
+
