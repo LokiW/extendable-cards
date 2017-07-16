@@ -35,7 +35,7 @@ def get_grand_warlord_voss_hero():
     cards.append({
         'name': "Gene-Bound Thorathian Tamar",
         'tags': [SentinelTag.TARGET, SentinelTag.SURVIVOR],
-        'description': "This target is immune to psychic damage.\nAt the end of Rainek's turn, activate an attack, assist, analyse or defend text.\nAttack: Deal 1 target 1 damage. Activate a different attack text.\nAssist: Activate an attack, assist, analyse or defend text.\nAnalyse: Look at the top card of any deck, put that card either in play, on the top or bottom of that deck or discard it.\nDefend: Reduce all damage by 1.",
+        'description': "This target is immune to psychic damage.\nAt the end of Rainek's turn, activate an attack, assist, analyse or defend text that hasn't been activated this turn.\nAttack: Deal 1 target 1 damage. Activate a different attack text.\nAssist: Activate an attack, assist, analyse or defend text.\nAnalyse: Look at the top card of any deck, put that card either in play, on the top or bottom of that deck or discard it.\nDefend: Reduce all damage by 1.",
         'max_health': 10,
         'quote': "The valiant sometimes taste death twice. -Tamar"
     })
@@ -80,7 +80,7 @@ def get_grand_warlord_voss_hero():
     action_helm = {
         'name': "Helm of Action",
         'tags': [SentinelTag.EQUIPMENT, SentinelTag.LIMITED],
-        'description': "Put this card next to a target. At the start of theri turn, that target may deal themselves 2 psychic damage to activate one of their attack, assist, analyse or defend texts."
+        'description': "Put this card next to a target. At the start of their turn, that target may deal themselves 2 psychic damage to activate one of their attack, assist, analyse or defend texts."
     }
     cards.extend([action_helm, action_helm])
 

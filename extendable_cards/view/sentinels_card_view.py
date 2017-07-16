@@ -1,11 +1,13 @@
 from extendable_cards.view.view_utils import break_text, CardDisplayObject
+from extendable_cards.view.image_utils import ImageDisplayObject
 from extendable_cards.view.card_view import CardView
 from extendable_cards.view.graphics import Rectangle, Point, Text
 from extendable_cards.lib.sentinels import SentinelCard, SentinelTag
 from extendable_cards.data.grand_warlord_voss_hero import get_grand_warlord_voss_hero
+from extendable_cards.data.lady_of_the_woods_hero import get_lady_of_the_woods_hero
 
 class SentinelCardView(SentinelCard):
-    def __init__(self, graphwin, card):
+    def __init__(self, graphwin, card, f_image=None, b_image=None):
         super(SentinelCardView, self).__init__(card)
         self.win = graphwin
         
@@ -24,7 +26,10 @@ class SentinelCardView(SentinelCard):
         if SentinelTag.TARGET in self.tags:
             configs.append({'text': self.current_health, 'r':0, 'c':1, 's':'W', 'h':1, 'w':7, 'cw': 5})
 
-        self.display = CardDisplayObject(configs, graphwin)        
+        if f_image and b_image:
+            self.display = ImageDisplayObject(configs, graphwin, f_image, b_image)
+        else:
+            self.display = CardDisplayObject(configs, graphwin)        
     
     def display_card(self, context):
         self.display.display_card(context)
@@ -45,3 +50,12 @@ def get_grand_warlord_voss_hero_view(graphwin):
     for card in cards:
         view_cards.append(SentinelCardView(graphwin, card))
     return view_cards
+
+
+def get_lady_of_the_woods_hero_view(graphwin):
+    cards = get_lady_of_the_woods_hero()
+    view_cards = []
+    for card in cards:
+        view_cards.append(SentinelCardView(graphwin, card, f_image=card['f_image'], b_image=card['b_image']))
+    return view_cards
+

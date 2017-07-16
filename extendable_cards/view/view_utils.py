@@ -1,5 +1,6 @@
 from extendable_cards.lib.cards import Card
-from tkinter import Text, Frame, Scrollbar
+from Tkinter import Text, Frame
+
 import pdb
 
 
@@ -211,7 +212,6 @@ class CardDisplayObject(object):
         if self.enlarged:
             self._shrink()
         else:
-            print 'enbiggen'
             w = (self.last_context['rx'] - self.last_context['lx']) * 2
             h = (self.last_context['by'] - self.last_context['ty']) * 2
 
@@ -231,7 +231,6 @@ class CardDisplayObject(object):
             self.enlarged = True
 
     def _shrink(self):
-        print 'shrink'
         self.frame.config(borderwidth=self.f_config['borderwidth'], background=self.f_config['background'],
                             padx=self.f_config['padx'], relief=self.f_config['relief'])
 
