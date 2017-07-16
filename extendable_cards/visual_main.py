@@ -5,13 +5,13 @@ from extendable_cards.view.graphics import GraphWin, Point
 from extendable_cards.view.game_outline import GameOutline
 from extendable_cards.view.card_view import CardView, CardOrganizerDisplay
 from extendable_cards.view.playing_card_view import PlayingCardView, get_standard_playing_card_deck_view
-from extendable_cards.view.sentinels_card_view import SentinelCardView, get_grand_warlord_voss_hero_view
+from extendable_cards.view.sentinels_card_view import SentinelCardView, get_grand_warlord_voss_hero_view, get_lady_of_the_woods_hero_view
 from tkinter import Button, Entry
 import sys
 import pdb
 
 SCREEN = {"height": 100, "width": 100}
-
+INTRO_UI = []
 
 def visual_main(argv):
     if argv:
@@ -27,12 +27,19 @@ def visual_main(argv):
     win.config(width=SCREEN["width"], height=SCREEN["height"])
 
     pc_b = Button(win, text="Standard Playing Card Deck", command=lambda: pcd_game(win))
+    INTRO_UI.append(pc_b)
     pc_b.place(x=(SCREEN['width']/3.0), y=0)
 
-    sm_b = Button(win, text="Sentinels of the Multiverse", command=lambda: sentinels_game(win))
-    sm_b.place(x=(SCREEN['width']*(2.0/3.0)), y=0)
+    rd_b = Button(win, text="Rainek the Disgraced", command=lambda: sentinels_game(win, 'rainek'))
+    INTRO_UI.append(rd_b)
+    rd_b.place(x=(SCREEN['width']/3.0), y=30)
+
+    lw_b = Button(win, text="Lady of the Wood", command=lambda: sentinels_game(win, 'lady'))
+    INTRO_UI.append(lw_b)
+    lw_b.place(x=(SCREEN['width']/3.0), y=60)
 
     win.mainloop()
+
 
 def console_game_input_loop():
     cards = get_standard_playing_card_deck()
@@ -162,8 +169,13 @@ def card_interaction(control, line):
     
     return True
 
+def disable_intro_ui():
+    for widget in INTRO_UI:
+        widget.place_forget()
+
 def pcd_game(win):
     win.delete("all")
+    disable_intro_ui()
     y_padding = 50
 
     win_x = win.winfo_x()
@@ -193,8 +205,9 @@ def pcd_game(win):
 
 
 
-def sentinels_game(win):
+def sentinels_game(win, deck_choice):
     win.delete("all")
+    disable_intro_ui()
 
     y_padding = 50
 
@@ -204,8 +217,11 @@ def sentinels_game(win):
     height = SCREEN['height']-y_padding
     contexts = _get_card_organizer_tkinter_contexts(win_x, win_y, width, height)
 
-    #TODO have player select these so they can be variable
-    hero_deck = get_grand_warlord_voss_hero_view(win)
+    if 'lady' in deck_choice.lower():
+        hero_deck = get_lady_of_the_woods_hero_view(win)
+    else:
+        hero_deck = get_grand_warlord_voss_hero_view(win)
+
     character_cards = []
     for card in hero_deck[:]:
         if SentinelTag.HERO in card.tags:
