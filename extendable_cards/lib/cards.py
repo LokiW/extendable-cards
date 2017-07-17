@@ -43,14 +43,14 @@ class CardOrganizer(object):
         found = None
         use_found = False
         for card in self.cards:
-            if name == card.name:
+            if name.lower() == card.name.lower():
                 return card
 
-            if name in card.name:
+            if name.lower() in card.name.lower():
                 if not found:
                     found = card
                     use_found = True
-                elif found.name != card.name:
+                elif found.name.lower() != card.name.lower():
                     use_found = False
 
         if use_found:

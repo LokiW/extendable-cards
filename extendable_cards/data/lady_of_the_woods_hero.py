@@ -111,7 +111,7 @@ def get_lady_of_the_woods_hero():
     cards.extend([rebirth, rebirth])
 
     clearing = {
-        'name': "Clearing",
+        'name': "Enchanted Clearing",
         'tags': [],
         'description': "",
         'f_image': 'data/card_images/LadyoftheWood/card10 clearing-qty2.jpg',
@@ -120,7 +120,7 @@ def get_lady_of_the_woods_hero():
     cards.extend([clearing, clearing])
 
     serenity = {
-        'name': "Serenity",
+        'name': "Serenity of Dawn",
         'tags': [],
         'description': "",
         'f_image': 'data/card_images/LadyoftheWood/card11 serenity-qty2.jpg',
@@ -129,7 +129,7 @@ def get_lady_of_the_woods_hero():
     cards.extend([serenity, serenity])
 
     frost_petal = {
-        'name': "Frost Petal",
+        'name': "Frost on the Petals",
         'tags': [],
         'description': "",
         'f_image': 'data/card_images/LadyoftheWood/card13 frostpetal-qty3.jpg',
@@ -138,7 +138,7 @@ def get_lady_of_the_woods_hero():
     cards.extend([frost_petal, frost_petal, frost_petal])
 
     cloudfire = {
-        'name': "Cloudfire",
+        'name': "Fire in the Clouds",
         'tags': [],
         'description': "",
         'f_image': 'data/card_images/LadyoftheWood/card14 cloudfire-qty3.jpg',
@@ -147,7 +147,7 @@ def get_lady_of_the_woods_hero():
     cards.extend([cloudfire, cloudfire, cloudfire])
 
     nobility = {
-        'name': "Nobility",
+        'name': "Nobility of Dusk",
         'tags': [],
         'description': "",
         'f_image': 'data/card_images/LadyoftheWood/card15 nobility-qty3.jpg',
@@ -156,7 +156,7 @@ def get_lady_of_the_woods_hero():
     cards.extend([nobility, nobility, nobility])
 
     calm = {
-        'name': "Cloudfire",
+        'name': "Calm Before the Storm",
         'tags': [],
         'description': "",
         'f_image': 'data/card_images/LadyoftheWood/card16 calm-qty3.jpg',
@@ -165,7 +165,7 @@ def get_lady_of_the_woods_hero():
     cards.extend([calm, calm, calm])
 
     crown = {
-        'name': "crown",
+        'name': "Crown of the Four Winds",
         'tags': [],
         'description': "",
         'f_image': 'data/card_images/LadyoftheWood/card17 crown-qty2.jpg',
